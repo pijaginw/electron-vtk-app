@@ -1,1 +1,93 @@
-<head> <meta http-equiv="Content-type" content="text/html; charset=utf-8"> <meta name="viewport" content="width=device-width,initial-scale=1"> </head> <body><table style="width:400px"> <tbody><tr> <td>Height</td> <td> <input class="height" min="0.5" max="2.0" step="0.1" value="1.0" type="range"> </td> </tr> <tr> <td>Radius</td> <td> <input class="radius" min="0.5" max="2.0" step="0.1" value="1.0" type="range"> </td> </tr> <tr> <td>Resolution</td> <td> <input class="resolution" min="4" max="100" step="1" value="6" type="range"> </td> </tr> <tr> <td>Capping</td> <td> <input class="capping" checked="checked" type="checkbox"> </td> </tr> </tbody></table> <div class="renderwidow" style="width: 400px; cursor: pointer;"><canvas style="display: block;" width="300" height="300"></canvas></div>   </body>
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+</head>
+<body>
+	<table style="width:400px">
+	<tbody>
+		<tr>
+			<td>Height</td>
+			<td>
+				<input class="height" min="0.5" max="2.0" step="0.1" value="1.0" type="range">
+			</td>
+		</tr>
+		<tr>
+			<td>Radius</td>
+			<td>
+				<input class="radius" min="0.5" max="2.0" step="0.1" value="1.0" type="range">
+			</td>
+		</tr>
+		<tr>
+			<td>Resolution</td>
+			<td>
+				<input class="resolution" min="4" max="100" step="1" value="6" type="range">
+			</td>
+		</tr>
+		<tr>
+			<td>Capping</td>
+			<td>
+				<input class="capping" checked="checked" type="checkbox">
+			</td>
+		</tr>
+	</tbody>
+	</table>
+	<div class="renderwindow"  style="width: 400px; cursor: pointer;">
+		<canvas style="display: block;" width="300" height="300"></canvas>
+	</div>
+	<script type="text/javascript">
+		const {ipcRenderer} = require('electron');
+		console.log(ipcRenderer.sendSync('synchronous-message', ''));
+
+		ipcRenderer.on('asynchronous-reply', function(event, arg){
+
+		  	const vtk = require('vtk.js');
+		  	const renderWindowContainer = document.querySelector('.renderwindow');
+
+	        var ren = vtk.Rendering.Core.vtkRenderer.newInstance();
+	        ren.setBackground(0.32, 0.34, 0.43);
+	        var renWin = vtk.Rendering.Core.vtkRenderWindow.newInstance();
+	        renWin.addRenderer(ren);
+	        var glwindow = vtk.Rendering.OpenGL.vtkRenderWindow.newInstance();
+	        glwindow.setContainer(renderWindowContainer);
+	        renWin.addView(glwindow);
+	        var iren = vtk.Rendering.Core.vtkRenderWindowInteractor.newInstance();
+	        iren.setView(glwindow);
+	        var actor = vtk.Rendering.Core.vtkActor.newInstance();
+	        ren.addActor(actor);
+	        var mapper = vtk.Rendering.Core.vtkMapper.newInstance();
+	        actor.setMapper(mapper);
+	        var cam = vtk.Rendering.Core.vtkCamera.newInstance();
+	        ren.setActiveCamera(cam);
+	        cam.setFocalPoint(0, 0, 0);
+	        cam.setPosition(0, 0, 4);
+	        cam.setClippingRange(0.1, 50.0);
+	        var coneSource = vtk.Filters.Sources.vtkConeSource.newInstance();
+	        mapper.setInputConnection(coneSource.getOutputPort());
+	        iren.initialize();
+	        iren.bindEvents(renderWindowContainer, document);
+	        iren.start();
+
+	        // ----- JavaScript UI -----
+	        ['height', 'radius', 'resolution'].forEach(function (propertyName) {
+                document.querySelector('.' + propertyName).addEventListener('input', function (e) {
+                    var value = Number(e.target.value);
+                    coneSource.set( {propertyName: value} );
+                    renWin.render();
+                });
+	        });
+	        document.querySelector('.capping').addEventListener('change', function (e) {
+                var capping = !!e.target.checked;
+                coneSource.set({ capping: capping });
+                renWin.render();
+	        });
+
+	        // ----- Console play ground -----
+	        global.coneSource = coneSource;
+	        global.mapper = mapper;
+	        global.actor = actor;
+	        global.renderer = ren;
+	        global.renderWindow = renWin;
+		});
+		ipcRenderer.send('asynchronous-message', '')
+	</script>
+</body>
