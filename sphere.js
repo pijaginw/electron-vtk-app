@@ -1,33 +1,33 @@
-const vtk = require('vtk.js');
+var vtk = require('vtk.js');
 
-const renderWindowContainer = document.querySelector('.renderwindow');
+var renderWindowContainer = document.querySelector('.renderwindow');
 
-const ren = vtk.Rendering.Core.vtkRenderer.newInstance();
+var ren = vtk.Rendering.Core.vtkRenderer.newInstance();
 ren.setBackground(0.32, 0.34, 0.43);
 
-const renWin = vtk.Rendering.Core.vtkRenderWindow.newInstance();
+var renWin = vtk.Rendering.Core.vtkRenderWindow.newInstance();
 renWin.addRenderer(ren);
 
-const glwindow = vtk.Rendering.OpenGL.vtkRenderWindow.newInstance();
+var glwindow = vtk.Rendering.OpenGL.vtkRenderWindow.newInstance();
 glwindow.setContainer(renderWindowContainer);
 renWin.addView(glwindow);
 
-const iren = vtk.Rendering.Core.vtkRenderWindowInteractor.newInstance();
+var iren = vtk.Rendering.Core.vtkRenderWindowInteractor.newInstance();
 iren.setView(glwindow);
 
-const actor = vtk.Rendering.Core.vtkActor.newInstance();
+var actor = vtk.Rendering.Core.vtkActor.newInstance();
 ren.addActor(actor);
 
-const mapper = vtk.Rendering.Core.vtkMapper.newInstance();
+var mapper = vtk.Rendering.Core.vtkMapper.newInstance();
 actor.setMapper(mapper);
 
-const cam = vtk.Rendering.Core.vtkCamera.newInstance();
+var cam = vtk.Rendering.Core.vtkCamera.newInstance();
 ren.setActiveCamera(cam);
 cam.setFocalPoint(0, 0, 0);
 cam.setPosition(0, 0, 4);
 cam.setClippingRange(0.1, 50.0);
 
-const sphereSource = vtk.Filters.Sources.vtkSphereSource.newInstance();
+var sphereSource = vtk.Filters.Sources.vtkSphereSource.newInstance();
 mapper.setInputConnection(sphereSource.getOutputPort());
 iren.initialize();
 iren.bindEvents(renderWindowContainer, document);
@@ -37,7 +37,7 @@ iren.start();
 ['radius', 'thetaResolution', 'startTheta', 'endTheta',
     'phiResolution', 'startPhi', 'endPhi'].forEach(function(propertyName) {
     document.querySelector('.' + propertyName).addEventListener('input', function(e) {
-        const value = Number(e.target.value);
+        var value = Number(e.target.value);
         switch (propertyName){
         case 'radius':
             sphereSource.set({ radius: value });
@@ -62,6 +62,6 @@ iren.start();
             break;
         }
         renWin.render();
-  });
+    });
 });
 

@@ -56,9 +56,3 @@ document.getElementById('capping').addEventListener('change', function (e) {
     renWin.render();
 });
 
-// ----- Console play ground -----
-global.coneSource = coneSource;
-global.mapper = mapper;
-global.actor = actor;
-global.renderer = ren;
-global.renderWindow = renWin;
