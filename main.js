@@ -19,13 +19,13 @@ function createWindow () {
 
     mainWindow.webContents.openDevTools();
 
-    const {ipcMain} = require('electron');
-    ipcMain.on('asynchronous-message', (event, arg) => {
-      event.sender.send('asynchronous-reply', '');
-    })
-    ipcMain.on('synchronous-message', (event, arg) => {
-        event.returnValue = '';
-    })
+    // const {ipcMain} = require('electron');
+    // ipcMain.on('asynchronous-message', (event, arg) => {
+    //   event.sender.send('asynchronous-reply', '');
+    // })
+    // ipcMain.on('synchronous-message', (event, arg) => {
+    //     event.returnValue = '';
+    // })
 
   // Emitted when the window is closed.
     mainWindow.on('closed', function () {
