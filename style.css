@@ -1,0 +1,11 @@
+#control_panel {
+    float: left;
+    width: 350px;
+    min-height: 450px;
+}
+
+#renderwindow {
+    cursor: pointer;
+    width: 600px;
+    margin-left: 351px;
+}

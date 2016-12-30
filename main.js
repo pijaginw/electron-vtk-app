@@ -6,13 +6,14 @@ const BrowserWindow = electron.BrowserWindow;
 
 const vtk = require('vtk.js');
 
-let mainWindow;
+"use strict";
+var mainWindow = void 0;
 
 function createWindow () {
-    mainWindow = new BrowserWindow({width: 800, height: 600, offscreen: true});
+    mainWindow = new BrowserWindow({width: 1200, height: 900, offscreen: true});
 
     mainWindow.loadURL(url.format({
-        pathname: path.join(__dirname, 'controlPanelSphere.html'),
+        pathname: path.join(__dirname, 'controlPanel.html'),
         protocol: 'file:',
         slashes: true
     }));
