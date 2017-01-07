@@ -8,6 +8,27 @@ var h = window.innerHeight;
 // lista aktorów -- zawiera dla kazdego aktora [source, x, y, z, mapper]
 var SPHERES = [];
 var CONES = [];
+var available_actors = document.getElementById('available_actors');
+
+function updateAvailableActorsList() {
+    while (document.getElementsByTagName('option').length > 0) {
+        removeEl = document.getElementsByTagName('option');
+        available_actors.remove(removeEl);
+    }
+
+    for (var s = 0; s < SPHERES.length; s++) {
+        newEl = document.createElement('option');
+        available_actors.appendChild(newEl);
+        newEl.innerHTML = SPHERES[s][0];
+        newEl.value = SPHERES[s][0];
+    }
+    for (var c = 0; c < CONES.length; c++) {
+        newEl = document.createElement('option');
+        available_actors.appendChild(newEl);
+        newEl.innerHTML = CONES[c][0];
+        newEl.value = CONES[c][0];
+    }
+}
 
 var renderWindowContainer = document.querySelector('.renderwindow');
 var ren = vtk.Rendering.Core.vtkRenderer.newInstance();
@@ -49,7 +70,9 @@ function createSphere(renderer, iren, renWin, con, camera) {
         var xyz = get_focal_point();
         camera.setFocalPoint(xyz[0], xyz[1], xyz[2]);
     }
-    SPHERES.push([sphereSource, pos[0], pos[1], pos[2], mapper]);
+    var sphere_name = 'sphere' + (SPHERES.length+1);
+    SPHERES.push([sphere_name, sphereSource, pos[0], pos[1], pos[2], mapper]);
+    updateAvailableActorsList();
 
     iren.initialize();
     iren.bindEvents(con, document);
@@ -75,7 +98,9 @@ function createCone(renderer, iren, renWin, con, camera) {
         var xyz = get_focal_point();
         camera.setFocalPoint(xyz[0], xyz[1], xyz[2]);
     }
-    CONES.push([coneSource, pos[0], pos[1], pos[2], mapper]);
+    var cone_name = 'cone' + (CONES.length+1);
+    CONES.push([cone_name, coneSource, pos[0], pos[1], pos[2], mapper]);
+    updateAvailableActorsList();
 
     iren.initialize();
     iren.bindEvents(con, document);
@@ -84,6 +109,7 @@ function createCone(renderer, iren, renWin, con, camera) {
 }
 
 function reload() {
+    updateAvailableActorsList();
     const {ipcRenderer} = require('electron');
     ipcRenderer.sendSync('synchronous-message', 'reload');
     SPHERES = [];
@@ -147,9 +173,9 @@ function get_focal_point() {
     var sum_z = 0;
     var i;
     for (i = 0; i < SPHERES.length; i++) {
-        sum_x += SPHERES[i][1];
-        sum_y += SPHERES[i][2];
-        sum_z += SPHERES[i][3];
+        sum_x += SPHERES[i][2];
+        sum_y += SPHERES[i][3];
+        sum_z += SPHERES[i][4];
     }
     if (SPHERES.length != 0) {
         sum_x = sum_x / SPHERES.length;
@@ -161,9 +187,9 @@ function get_focal_point() {
     var sum_y2 = 0;
     var sum_z2 = 0;
     for (i = 0; i < CONES.length; i++) {
-        sum_x2 += CONES[i][1];
-        sum_y2 += CONES[i][2];
-        sum_z2 += CONES[i][3];
+        sum_x2 += CONES[i][2];
+        sum_y2 += CONES[i][3];
+        sum_z2 += CONES[i][4];
     }
     if (CONES.length != 0) {
         sum_x2 = sum_x2 / CONES.length;
