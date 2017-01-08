@@ -110,7 +110,7 @@ function createCone(renderer, iren, renWin, con, camera) {
     renWin.render();
 }
 
-function reload() {
+function reload_scene() {
     updateAvailableActorsList();
     const {ipcRenderer} = require('electron');
     ipcRenderer.sendSync('synchronous-message', 'reload');
@@ -129,7 +129,7 @@ document.getElementById("add_sphere_button").addEventListener("click", function(
 document.getElementById("add_cone_button").addEventListener("click", function(){
     createCone(ren, iren, renWin, renderWindowContainer, camera);
 });
-document.getElementById("clear_button").addEventListener("click", reload);
+document.getElementById("clear_button").addEventListener("click", reload_scene);
 
 
 function create_param(param_name, param_type, min, max, step, value) {
@@ -157,7 +157,7 @@ function create_params_for_sphere(idx) {
     var x_pos_s = create_position_params('x', 'sphere');
     var y_pos_s = create_position_params('y', 'sphere');
     var z_pos_s = create_position_params('z', 'sphere');
-    x_pos_s.addEventListener('input', function (e) {  // TODO: dodać obsługę ujemnych wartości
+    x_pos_s.addEventListener('input', function (e) {
         var y_value = Number(document.getElementById('y_pos_s').value);
         var z_value = Number(document.getElementById('z_pos_s').value);
         if (y_value == null) {
@@ -167,7 +167,11 @@ function create_params_for_sphere(idx) {
             z_value = 0;
         }
         var value = Number(e.target.value);
-        SPHERES[idx][5].setPosition(value, y_value, z_value);
+        if (value) {
+            SPHERES[idx][5].setPosition(value, y_value, z_value);
+        } else {
+            SPHERES[idx][5].setPosition(0, y_value, z_value);
+        }
         renWin.render();
     });
     y_pos_s.addEventListener('input', function (e) {
@@ -180,7 +184,11 @@ function create_params_for_sphere(idx) {
             z_value = 0;
         }
         var value = Number(e.target.value);
-        SPHERES[idx][5].setPosition(x_value, value, z_value);
+        if (value) {
+            SPHERES[idx][5].setPosition(x_value, value, z_value);
+        } else {
+            SPHERES[idx][5].setPosition(x_value, 0, z_value);
+        }
         renWin.render();
     });
     z_pos_s.addEventListener('input', function (e) {
@@ -193,7 +201,11 @@ function create_params_for_sphere(idx) {
             y_value = 0;
         }
         var value = Number(e.target.value);
-        SPHERES[idx][5].setPosition(x_value, y_value, value);
+        if (value) {
+            SPHERES[idx][5].setPosition(x_value, y_value, value);
+        } else {
+            SPHERES[idx][5].setPosition(x_value, y_value, 0);
+        }
         renWin.render();
     });
     var radius = create_param('radius', 'range', '0.1', '1.5', '0.1', '0.5');
@@ -244,7 +256,7 @@ function create_params_for_cone(idx) {
     var x_pos_c = create_position_params('x', 'cone');
     var y_pos_c = create_position_params('y', 'cone');
     var z_pos_c = create_position_params('z', 'cone');
-    x_pos_c.addEventListener('input', function (e) {  // TODO: dodać obsługę ujemnych wartości
+    x_pos_c.addEventListener('input', function (e) {
         var y_value = Number(document.getElementById('y_pos_c').value);
         var z_value = Number(document.getElementById('z_pos_c').value);
         if (y_value == null) {
@@ -254,7 +266,11 @@ function create_params_for_cone(idx) {
             z_value = 0;
         }
         var value = Number(e.target.value);
-        CONES[idx][5].setPosition(value, y_value, z_value);
+        if (value) {
+            CONES[idx][5].setPosition(value, y_value, z_value);
+        } else {
+            CONES[idx][5].setPosition(0, y_value, z_value);
+        }
         renWin.render();
     });
     y_pos_c.addEventListener('input', function (e) {
@@ -267,7 +283,11 @@ function create_params_for_cone(idx) {
             z_value = 0;
         }
         var value = Number(e.target.value);
-        CONES[idx][5].setPosition(x_value, value, z_value);
+        if (value) {
+            CONES[idx][5].setPosition(x_value, value, z_value);
+        } else {
+            CONES[idx][5].setPosition(x_value, 0, z_value);
+        }
         renWin.render();
     });
     z_pos_c.addEventListener('input', function (e) {
@@ -280,7 +300,11 @@ function create_params_for_cone(idx) {
             y_value = 0;
         }
         var value = Number(e.target.value);
-        CONES[idx][5].setPosition(x_value, y_value, value);
+        if (value) {
+            CONES[idx][5].setPosition(x_value, y_value, value);
+        } else {
+            CONES[idx][5].setPosition(x_value, y_value, 0);
+        }
         renWin.render();
     });
     var height = create_param('height', 'range', '0.5', '2.0', '0.1', '1.0');
