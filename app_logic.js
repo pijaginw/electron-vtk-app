@@ -5,13 +5,12 @@ SCROLLS = 25;
 var w = window.innerWidth;
 var h = window.innerHeight;
 
-// lista aktorów -- zawiera dla kazdego aktora [nazwa, source, x, y, z, mapper]
+// lista aktorów -- zawiera dla kazdego aktora [nazwa, source, x, y, z, actor, mapper]
 var SPHERES = [];
 var CONES = [];
 var available_actors = document.getElementById('available_actors');
 
 function updateAvailableActorsList() {
-    // while (document.getElementsByTagName('option').length > 0) {
     for(var i = document.getElementsByTagName('option').length-1; i > 0 ; i--) {
         removeEl = document.getElementsByTagName('option');
         available_actors.remove(removeEl);
@@ -50,8 +49,6 @@ ren.setActiveCamera(camera);
 camera.setFocalPoint(0, 0, 0);
 camera.setPosition(0, 0, 4);
 camera.setClippingRange(0.1, 50.0);
-
-var sphereSource = null;
 renWin.render();
 
 function createSphere(renderer, iren, renWin, con, camera) {
@@ -59,7 +56,7 @@ function createSphere(renderer, iren, renWin, con, camera) {
     renderer.addActor(actor);
     var mapper = vtk.Rendering.Core.vtkMapper.newInstance();
     actor.setMapper(mapper);
-    sphereSource = vtk.Filters.Sources.vtkSphereSource.newInstance();
+    var sphereSource = vtk.Filters.Sources.vtkSphereSource.newInstance();
     mapper.setInputConnection(sphereSource.getOutputPort());
 
     var pos = get_pos();
